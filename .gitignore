@@ -1,0 +1,6 @@
+*~
+.direnv/
+.clj-kondo/
+.cpcache/
+.lsp/
+.nrepl-port

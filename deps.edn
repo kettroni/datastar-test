@@ -1,0 +1,4 @@
+{:paths ["src"]
+ :deps  {dev.data-star.clojure/http-kit {:mvn/version "1.0.0-RC4"}
+         hiccup/hiccup                  {:mvn/version "2.0.0"}
+         http-kit/http-kit              {:mvn/version "2.8.1"}}}

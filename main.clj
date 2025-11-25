@@ -10,13 +10,15 @@
   {:status  200
    :headers {"Content-Type" "text/html"}})
 
-;; Simple hello example
+(def datastar-cdn
+  "https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.6/bundles/datastar.js")
+
 (def hello-page
   (->> [:html {:data-datastar-root true}
         [:head
          [:script
           {:type "module"
-           :src  "https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.6/bundles/datastar.js"}]]
+           :src  datastar-cdn}]]
         [:body
          [:div
           [:button
@@ -46,7 +48,6 @@
                                            (d*/close-sse! sse-gen))})]
     response))
 
-;; Chunked hello example
 (def chunked1
   (-> [:p#hello-field "Hello"]
       h/html
@@ -79,7 +80,12 @@
   (hk-gen/->sse-response
    request
    {hk-gen/on-open (fn [sse-gen]
-                     (swap! !subscribers conj sse-gen))
+                     (doseq [sub @!subscribers]
+                       (d*/patch-elements! sub (-> [:p#hello-field "new subscriber joined!"]
+                                                   h/html
+                                                   str)))
+                     (swap! !subscribers conj sse-gen)
+                     )
     hk-gen/on-close (fn [sse-gen status]
                       (swap! !subscribers disj sse-gen))}))
 
@@ -92,16 +98,16 @@
 
 (defn app [{:keys [uri] :as req}]
   (case uri
-    "/say-hello"       (simple-hello req)
-    "/chunked-hello"   (chunked-hello req)
-    "/subscribe" (subscribe-handler req)
+    "/say-hello"     (simple-hello req)
+    "/chunked-hello" (chunked-hello req)
+    "/subscribe"     (subscribe-handler req)
     hello-page))
 
-(def my-server
-  (-> app
-      (hk-server/run-server {:port 3000})))
-
 (comment
+
+  (def my-server
+    (-> app
+        (hk-server/run-server {:port 3000})))
 
   (my-server :timeout 100)
 

@@ -14,17 +14,7 @@
 (defn hello-buttons []
   [:div
    [:div
-    {:data-on:click "@get('/say-hello')"
-     ;; :style         {:background-color "red"
-     ;;                 :color            "white"
-     ;;                 :padding          "10px 20px"
-     ;;                 :text-align       "center"
-     ;;                 :text-decoration  "none"
-     ;;                 :display          "inline-block"
-     ;;                 :font-size        "16px"
-     ;;                 :margin           "4px 2px"
-     ;;                 :cursor           "pointer"}
-     }
+    {:data-on:click "@get('/say-hello')"}
     "Press to hello!"]
    [:div
     {:data-on:click "@get('/chunked-hello')"}
@@ -45,7 +35,7 @@
            :href "/assets/css/colors.css"}]
          [:link
           {:rel  "stylesheet"
-           :href "/assets/css/base.css"}]]
+           :href "/assets/css/layout.css"}]]
         [:body
          (ui/hello-buttons)
          [:p#hello-field.mt-4.text-xl]]]

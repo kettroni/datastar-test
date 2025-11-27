@@ -1,13 +1,22 @@
 (ns main
   (:require [org.httpkit.server :as hk-server]
-            [handler :as handler]))
+            [handler :as handler]
+            [reitit.ring :as ring]))
 
-(defn app [{:keys [uri] :as req}]
-  (case uri
-    "/say-hello"     (handler/simple-hello req)
-    "/chunked-hello" (handler/chunked-hello req)
-    "/subscribe"     (handler/subscribe-handler req)
-    (handler/base-handler req)))
+(def app
+  (ring/ring-handler
+   (ring/router
+    [["/" {:get handler/base-handler}]
+
+     ["/assets/*" (ring/create-file-handler)]
+
+     ["/say-hello"
+      {:get handler/simple-hello}]
+     ["/chunked-hello"
+      {:get handler/chunked-hello}]
+     ["/subscribe"
+      {:get handler/subscribe-handler}]
+     ])))
 
 (comment
 

@@ -11,26 +11,25 @@
        (s/join ".")
        keyword))
 
-(def btn-grp-style
-  [:button
-   :bg-p-1 ; Use the new bg-p-1 class
-   :text-p-1 ; Use the new text-p-1 class
-   :font-bold
-   :py-2
-   :px-4
-   :rounded
-   :cursor-pointer
-   :hover:bg-blue-300])
-
 (defn hello-buttons []
-  [:div.flex.flex-row.bg-gray-100.shadow-md.rounded.p-4.mx-auto.w-fit.space-x-4
-   [(->kw btn-grp-style)
-    {:data-on:click "@get('/say-hello')"}
+  [:div
+   [:div
+    {:data-on:click "@get('/say-hello')"
+     ;; :style         {:background-color "red"
+     ;;                 :color            "white"
+     ;;                 :padding          "10px 20px"
+     ;;                 :text-align       "center"
+     ;;                 :text-decoration  "none"
+     ;;                 :display          "inline-block"
+     ;;                 :font-size        "16px"
+     ;;                 :margin           "4px 2px"
+     ;;                 :cursor           "pointer"}
+     }
     "Press to hello!"]
-   [(->kw btn-grp-style)
+   [:div
     {:data-on:click "@get('/chunked-hello')"}
     "Press to chuncked hello!"]
-   [(->kw btn-grp-style)
+   [:div
     {:data-on:click "@get('/subscribe')"}
     "Press to subscribe hello channel!"]])
 
@@ -43,10 +42,10 @@
            :src  ui/datastar-cdn}]
          [:link
           {:rel  "stylesheet"
-           :href "/src/colors.css"}]
+           :href "/assets/css/colors.css"}]
          [:link
           {:rel  "stylesheet"
-           :href "/src/css/base.css"}]]
+           :href "/assets/css/base.css"}]]
         [:body
          (ui/hello-buttons)
          [:p#hello-field.mt-4.text-xl]]]

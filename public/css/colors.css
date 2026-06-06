@@ -1,75 +1,38 @@
 :root {
-  --bg-color: #121212; /* Dark background */
-  --text-color: #e0e0e0; /* Light text */
-
-  --primary-color: #BB86FC; /* Purple primary */
-  --primary-color-1: color-mix(in srgb, var(--primary-color) 80%, var(--bg-color));
-  --primary-color-2: color-mix(in srgb, var(--primary-color) 60%, var(--bg-color));
-  --primary-color-3: color-mix(in srgb, var(--primary-color) 40%, var(--bg-color));
-  --primary-color-4: color-mix(in srgb, var(--primary-color) 20%, var(--bg-color));
-
-  --secondary-color: #03DAC5; /* Teal secondary */
-  --secondary-color-1: color-mix(in srgb, var(--secondary-color) 80%, var(--bg-color));
-  --secondary-color-2: color-mix(in srgb, var(--secondary-color) 60%, var(--bg-color));
-  --secondary-color-3: color-mix(in srgb, var(--secondary-color) 40%, var(--bg-color));
-  --secondary-color-4: color-mix(in srgb, var(--secondary-color) 20%, var(--bg-color));
-
-  --accent-color: #FF4081; /* Pink accent */
-  --accent-color-1: color-mix(in srgb, var(--accent-color) 80%, var(--bg-color));
-  --accent-color-2: color-mix(in srgb, var(--accent-color) 60%, var(--bg-color));
-  --accent-color-3: color-mix(in srgb, var(--accent-color) 40%, var(--bg-color));
-  --accent-color-4: color-mix(in srgb, var(--accent-color) 20%, var(--bg-color));
+    --color1: #00303b; /* #7B542F; */
+    --color2: #ff7777; /* #B6771D; */
+    --color3: #ffce96; /* #FF9D00; */
+    --color4: #f1f2da; /* #FFCF71; */
 }
 
-body {
-  background-color: var(--bg-color);
-  color: var(--text-color);
+.bg-1 {
+  background-color: var(--color1);
+}
+
+.bg-2 {
+  background-color: var(--color2);
+}
+
+.bg-3 {
+  background-color: var(--color3);
+}
+
+.bg-4 {
+  background-color: var(--color4);
 }
 
 .p-1 {
-  color: var(--primary-color-1);
+  color: var(--color1);
 }
 
 .p-2 {
-  color: var(--primary-color-2);
+  color: var(--color2);
 }
 
 .p-3 {
-  color: var(--primary-color-3);
+  color: var(--color3);
 }
 
 .p-4 {
-  color: var(--primary-color-4);
-}
-
-.s-1 {
-  color: var(--secondary-color-1);
-}
-
-.s-2 {
-  color: var(--secondary-color-2);
-}
-
-.s-3 {
-  color: var(--secondary-color-3);
-}
-
-.s-4 {
-  color: var(--secondary-color-4);
-}
-
-.a-1 {
-  color: var(--accent-color-1);
-}
-
-.a-2 {
-  color: var(--accent-color-2);
-}
-
-.a-3 {
-  color: var(--accent-color-3);
-}
-
-.a-4 {
-  color: var(--accent-color-4);
+  color: var(--color4);
 }

@@ -1,2 +1,11 @@
 .button-group {
+    display: grid;
+    gap: 1em;
+    grid-template-columns: auto auto auto;
+    padding: 10px;
+}
+
+.button-group button {
+    padding: 20px;
+    border: none;
 }

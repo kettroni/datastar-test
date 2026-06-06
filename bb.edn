@@ -1,0 +1,33 @@
+{:paths ["script"]
+ :tasks
+ {:init (require '[dev])
+
+  ;; Start nREPL + clojure-mcp — primary dev entry point
+  nrepl
+  {:doc "Start nREPL with the :dev alias (includes clojure-mcp)"
+   :task (shell "clojure -M:dev")}
+
+  ;; Start the HTTP server standalone via -main (no REPL)
+  server
+  {:doc "Start the HTTP server on port 3000"
+   :task (shell "clojure -M -m main")}
+
+  ;; Ensure headless Chromium is running on port 9222
+  chrome
+  {:doc "Start headless Chromium on port 9222 (if not already running)"
+   :task (dev/ensure-chrome)}
+
+  ;; Kill and restart Chromium — fixes a dropped chrome-mcp connection
+  chrome-restart
+  {:doc "Kill and restart headless Chromium on port 9222"
+   :task (dev/restart-chrome)}
+
+  ;; Ensure Chrome is up, then drop into the dev REPL
+  dev
+  {:doc "Start Chrome (if needed) then launch the dev REPL"
+   :depends [chrome nrepl]}
+
+  ;; Quick smoke-test against the running server
+  smoke-test
+  {:doc "Smoke-test chat endpoints against the running server on port 3000"
+   :task (dev/smoke-test)}}}

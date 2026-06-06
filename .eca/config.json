@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "clojure-mcp": {
+      "command": "direnv",
+      "args": ["exec", "/home/kettroni/projects/clojure/datastar-test", "clojure", "-A:dev", "-X", "clojure-mcp.main/start"]
+    },
+    "chrome-mcp": {
+      "command": "direnv",
+      "args": ["exec", "/home/kettroni/projects/clojure/datastar-test", "chrome-mcp"]
+    }
+  }
+}

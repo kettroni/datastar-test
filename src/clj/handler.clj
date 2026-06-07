@@ -1,14 +1,11 @@
 (ns handler
   (:require [clojure.data.json :as json]
-            [hiccup2.core :as h]
             [starfederation.datastar.clojure.adapter.http-kit :as hk-gen]
             [starfederation.datastar.clojure.api :as d*]
-            [ui]))
+            [ui :refer [h>]]))
 
 (def say-hello-content
-  (-> [:p#hello-field "Hello world!"]
-      h/html
-      str))
+  (h> [:p#hello-field "Hello world!"]))
 
 (defn simple-hello [request]
   (let [response (hk-gen/->sse-response request
@@ -18,20 +15,21 @@
                                            (d*/close-sse! sse-gen))})]
     response))
 
-(defn base-handler [request]
+(defn base-handler [_request]
   {:status 200
    :headers {"Content-Type" "text/html"}
-   :body ui/hello-page})
+   :body ui/home-page})
+
+(defn examples-page-handler [_request]
+  {:status 200
+   :headers {"Content-Type" "text/html"}
+   :body ui/examples-page})
 
 (def chunked1
-  (-> [:p#hello-field "Hello"]
-      h/html
-      str))
+  (h> [:p#hello-field "Hello"]))
 
 (def chunked2
-  (-> [:p#hello-field "Hello World!"]
-      h/html
-      str))
+  (h> [:p#hello-field "Hello World!"]))
 
 (defn chunked-hello [request]
   (hk-gen/->sse-response
@@ -43,10 +41,7 @@
                      (d*/close-sse! sse-gen))}))
 
 (def subscriber-message
-  (-> [:p#hello-field
-       "hello subscriber!"]
-      h/html
-      str))
+  (h> [:p#hello-field "hello subscriber!"]))
 
 ;; connections
 (def !subscribers (atom #{}))
@@ -58,9 +53,7 @@
       (hk-gen/->sse-response
        {hk-gen/on-open (fn [sse-gen]
                          (doseq [sub @!subscribers]
-                           (d*/patch-elements! sub (-> [:p#hello-field "new subscriber joined!"]
-                                                       h/html
-                                                       str)))
+                           (d*/patch-elements! sub (h> [:p#hello-field "new subscriber joined!"])))
                          (swap! !subscribers conj sse-gen))
         hk-gen/on-close (fn [sse-gen status]
                           (swap! !subscribers disj sse-gen))})))
@@ -80,11 +73,9 @@
    :body ui/chat-page})
 
 (defn- render-message [{:keys [username text]}]
-  (-> [:div.chat-message
+  (h> [:div.chat-message
        [:span.p-3 (str username ": ")]
-       [:span.p-4 text]]
-      h/html
-      str))
+       [:span.p-4 text]]))
 
 (defn chat-subscribe-handler [request]
   (hk-gen/->sse-response
@@ -94,7 +85,8 @@
                      (d*/patch-signals! sse-gen "{\"joined\": true}")
                       ;; Send existing messages to the new subscriber
                      (doseq [msg @!chat-messages]
-                       (d*/patch-elements! sse-gen (render-message msg)
+                       (d*/patch-elements! sse-gen
+                                           (render-message msg)
                                            {d*/selector "#chat-messages"
                                             d*/patch-mode d*/pm-append}))
                      (swap! !chat-subscribers conj sse-gen))
@@ -102,15 +94,20 @@
                       (swap! !chat-subscribers disj sse-gen))}))
 
 (defn chat-send-handler [request]
-  (let [signals (-> request d*/get-signals slurp (json/read-str :key-fn keyword))
-        username (:username signals)
-        text (:message signals)]
-    (when (and (seq username) (seq text))
-      (let [msg {:username username :text text}
+  (let [{:keys [username
+                message]} (-> request
+                              d*/get-signals
+                              slurp
+                              (json/read-str :key-fn keyword))]
+    (when (and (seq username)
+               (seq message))
+      (let [msg {:username username
+                 :text message}
             html (render-message msg)]
         (swap! !chat-messages conj msg)
         (doseq [sub @!chat-subscribers]
-          (d*/patch-elements! sub html
+          (d*/patch-elements! sub
+                              html
                               {d*/selector "#chat-messages"
                                d*/patch-mode d*/pm-append}))))
     {:status 200 :body ""}))

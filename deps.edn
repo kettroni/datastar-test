@@ -10,4 +10,7 @@
                               cider/cider-nrepl {:mvn/version "RELEASE"}}
                  :extra-paths ["dev"]
                  :main-opts ["-m" "nrepl.cmdline"
-                             "--middleware" "[cider.nrepl/cider-middleware]"]}}}
+                             "--middleware" "[cider.nrepl/cider-middleware]"]}
+           :mcp {:extra-deps {io.github.bhauman/clojure-mcp {:git/tag "v0.3.1"
+                                                              :git/sha "f30f7c01"}
+                              cider/cider-nrepl {:mvn/version "RELEASE"}}}}}

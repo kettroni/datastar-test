@@ -7,6 +7,7 @@
 (def app
   (-> (ring/ring-handler
        (ring/router [["/" {:get handler/base-handler}]
+                     ["/examples" {:get handler/examples-page-handler}]
                      ["/assets/*" (ring/create-file-handler)]
                      ["/say-hello" {:get handler/simple-hello}]
                      ["/chunked-hello" {:get handler/chunked-hello}]

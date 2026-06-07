@@ -11,6 +11,7 @@
 
 (defn page-head []
   [:head
+   [:meta {:name "viewport" :content "width=device-width, initial-scale=1"}]
    [:script {:type "module" :src datastar-cdn}]
    [:link {:rel "stylesheet" :href "/assets/css/colors.css"}]
    [:link {:rel "stylesheet" :href "/assets/css/layout.css"}]])
@@ -23,29 +24,29 @@
 (defn home-nav []
   [:div.button-group
    [:a {:href "/chat"}
-    [:button.bg-2.p-3 "Join Chat"]]
+    [:button.bg-2.color-3 "Join Chat"]]
    [:a {:href "/examples"}
-    [:button.bg-3.p-3 "Examples"]]])
+    [:button.bg-3.color-1 "Examples"]]])
 
 (def home-page
   (h> (page-shell
        [:body.bg-1.p-5
-        [:h1.p-4.text-2xl "Welcome"]
+        [:h1.color-4.text-2xl "Welcome"]
         (home-nav)])))
 
 (defn hello-buttons []
   [:div.button-group
-   [:button.bg-2.p-3
+   [:button.bg-2.color-3
     {:data-on:click "@get('/say-hello')"}
     "Press to hello!"]
-   [:button.bg-3.p-4
+   [:button.bg-3.color-4
     {:data-on:click "@get('/chunked-hello')"}
     "Press to chuncked hello!"]
-   [:button.bg-4.p-1
+   [:button.bg-4.color-1
     {:data-on:click "@get('/subscribe')"}
     "Press to subscribe hello channel!"]
    [:a {:href "/chat"}
-    [:button.bg-3.p-3 "Join Chat"]]])
+    [:button.bg-3.color-1 "Join Chat"]]])
 
 (def examples-page
   (h> (page-shell
@@ -55,29 +56,40 @@
 
 (defn username-section [attrs]
   [:div#username-section attrs
-   [:input.p-1
+   [:input.chat-input
     {:type "text"
      :placeholder "Enter your username..."
      :data-bind "username"}]
-   [:button.bg-2.p-3
-    {:data-on:click "@get('/chat/subscribe')"}
+   [:button.bg-2.color-3
+    {:data-on:click "$username.trim() && @get('/chat/subscribe')"}
     "Join"]])
 
 (defn chat-area [attrs]
   [:div#chat-area attrs
    [:div#chat-messages.mt-4]
-   [:div.mt-4
-    [:input.p-1
+   [:script
+    (h/raw
+     "document.addEventListener('DOMContentLoaded', function() {
+        var msgs = document.getElementById('chat-messages');
+        if (!msgs) return;
+        var obs = new MutationObserver(function() {
+          msgs.scrollTop = msgs.scrollHeight;
+        });
+        obs.observe(msgs, { childList: true });
+      });")]
+   [:div.compose-bar.mt-4
+    [:input.chat-input
      {:type "text"
       :placeholder "Type a message..."
-      :data-bind "message"}]
-    [:button.bg-2.p-3
-     {:data-on:click "@post('/chat/send')"}
+      :data-bind "message"
+      :data-on:keydown "if (evt.key === 'Enter' && $message.trim()) { @post('/chat/send'); $message = '' }"}]
+    [:button.bg-2.color-3
+     {:data-on:click "if ($message.trim()) { @post('/chat/send'); $message = '' }"}
      "Send"]]])
 
 (def chat-page
   (h> (page-shell
        [:body.bg-1.p-5
-        [:h1.p-4.text-2xl "Chat"]
+        [:h1.color-4.text-2xl "Chat"]
         (username-section {:data-show "!$joined"})
         (chat-area {:data-show "$joined"})])))

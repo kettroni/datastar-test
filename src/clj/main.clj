@@ -6,15 +6,15 @@
 
 (def app
   (-> (ring/ring-handler
-       (ring/router [["/" {:get handler/base-handler}]
-                     ["/examples" {:get handler/examples-page-handler}]
+       (ring/router [["/" {:get #(handler/base-handler %)}]
+                     ["/examples" {:get #(handler/examples-page-handler %)}]
                      ["/assets/*" (ring/create-file-handler)]
-                     ["/say-hello" {:get handler/simple-hello}]
-                     ["/chunked-hello" {:get handler/chunked-hello}]
-                     ["/subscribe" {:get handler/subscribe-handler}]
-                     ["/chat" {:get handler/chat-page-handler}]
-                     ["/chat/subscribe" {:get handler/chat-subscribe-handler}]
-                     ["/chat/send" {:post handler/chat-send-handler}]]))
+                     ["/say-hello" {:get #(handler/simple-hello %)}]
+                     ["/chunked-hello" {:get #(handler/chunked-hello %)}]
+                     ["/subscribe" {:get #(handler/subscribe-handler %)}]
+                     ["/chat" {:get #(handler/chat-page-handler %)}]
+                     ["/chat/subscribe" {:get #(handler/chat-subscribe-handler %)}]
+                     ["/chat/send" {:post #(handler/chat-send-handler %)}]]))
       params/wrap-params))
 
 (defn -main [& _args]

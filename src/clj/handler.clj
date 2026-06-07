@@ -70,24 +70,26 @@
    :headers {"Content-Type" "text/html"}
    :body ui/chat-page})
 
-(defn- render-message [{:keys [username text]}]
-  (let [time-str (-> (java.time.LocalTime/now)
-                     (.format (java.time.format.DateTimeFormatter/ofPattern "HH:mm")))]
-    (h> [:div.chat-message
-         [:span.message-time time-str]
-         [:span.username.color-2 (str username ":")]
-         [:span.text.color-4 text]])))
+(defn- render-message [{:keys [username text time]}]
+  (h> [:div {:class "flex items-baseline gap-2 px-2 py-1 border-b border-white/5 last:border-0"}
+       [:span {:class "text-xs text-light/40 shrink-0 self-end"} time]
+       [:span {:class "font-semibold text-accent shrink-0"} (str username ":")]
+       [:span {:class "text-light break-words min-w-0"} text]]))
 
 (defn chat-subscribe-handler [request]
   (hk-gen/->sse-response
    request
    {hk-gen/on-open (fn [sse-gen]
-                     (d*/patch-signals! sse-gen "{\"joined\": true}")
+                     (d*/patch-elements! sse-gen
+                                         (h> (ui/chat-area))
+                                         {d*/selector "#username-section"
+                                          d*/patch-mode d*/pm-outer})
                      (doseq [msg @!chat-messages]
                        (d*/patch-elements! sse-gen
                                            (render-message msg)
                                            {d*/selector "#chat-messages"
                                             d*/patch-mode d*/pm-append}))
+                     (d*/execute-script! sse-gen "document.getElementById('message-input').focus()")
                      (swap! !chat-subscribers conj sse-gen))
     hk-gen/on-close (fn [sse-gen _status]
                       (swap! !chat-subscribers disj sse-gen))}))
@@ -101,7 +103,9 @@
     (when (and (seq username)
                (seq message))
       (let [msg {:username username
-                 :text message}
+                 :text message
+                 :time (-> (java.time.LocalTime/now)
+                           (.format (java.time.format.DateTimeFormatter/ofPattern "HH:mm")))}
             html (render-message msg)]
         (swap! !chat-messages conj msg)
         (doseq [sub @!chat-subscribers]
